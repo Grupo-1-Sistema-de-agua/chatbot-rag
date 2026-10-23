@@ -3,8 +3,10 @@ package gt.umg.oficinaagua.chatbot.bitacora;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeDefinition;
@@ -16,6 +18,7 @@ import software.amazon.awssdk.services.dynamodb.model.ResourceNotFoundException;
 import software.amazon.awssdk.services.dynamodb.model.ScalarAttributeType;
 
 @Component
+@Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class BitacoraTablaInicializador implements ApplicationRunner {
 
     private static final Logger log = LoggerFactory.getLogger(BitacoraTablaInicializador.class);
