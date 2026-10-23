@@ -28,6 +28,7 @@ public class DataSourceConfig {
         HikariDataSource dataSource = crear("replica-pool", url, usuario, contrasena, 3);
         dataSource.setReadOnly(true);
         dataSource.setInitializationFailTimeout(-1);
+        dataSource.setConnectionTimeout(5000);
         return dataSource;
     }
 
