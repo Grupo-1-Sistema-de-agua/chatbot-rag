@@ -486,9 +486,7 @@
 .lateral {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  max-height: calc(100dvh - 150px);
-  overflow-y: auto;
+  gap: 12px;
 }
 
 .lateral > * {
@@ -536,7 +534,7 @@
 }
 
 .tarjeta {
-  padding: 18px;
+  padding: 16px;
   border: 1px solid var(--borde);
   border-radius: 24px;
   background: var(--fondo-superficie);
@@ -593,7 +591,7 @@
   cursor: wait;
 }
 
-.accion span {
+.accion span:not(.accionIcono) {
   flex: 1;
 }
 
