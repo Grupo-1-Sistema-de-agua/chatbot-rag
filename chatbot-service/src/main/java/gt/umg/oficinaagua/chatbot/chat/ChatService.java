@@ -1,6 +1,7 @@
 package gt.umg.oficinaagua.chatbot.chat;
 
 import gt.umg.oficinaagua.chatbot.excepcion.ServicioNoDisponibleException;
+import gt.umg.oficinaagua.chatbot.bitacora.BitacoraService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.messages.SystemMessage;
@@ -48,18 +49,28 @@ public class ChatService {
     private final ChatModel chatModel;
     private final int topK;
     private final double umbral;
+    private final BitacoraService bitacoraService;
 
     public ChatService(VectorStore vectorStore,
                        ChatModel chatModel,
+                       BitacoraService bitacoraService,
                        @Value("${chatbot.chat.top-k:4}") int topK,
                        @Value("${chatbot.chat.umbral:0.5}") double umbral) {
         this.vectorStore = vectorStore;
         this.chatModel = chatModel;
+        this.bitacoraService = bitacoraService;
         this.topK = topK;
         this.umbral = umbral;
     }
 
     public RespuestaChat responder(String pregunta) {
+        long inicio = System.currentTimeMillis();
+        RespuestaChat respuesta = consultar(pregunta);
+        bitacoraService.registrar(pregunta.strip(), respuesta, System.currentTimeMillis() - inicio);
+        return respuesta;
+    }
+
+    private RespuestaChat consultar(String pregunta) {
         String preguntaLimpia = pregunta.strip();
         List<Document> candidatos = buscar(preguntaLimpia);
 
