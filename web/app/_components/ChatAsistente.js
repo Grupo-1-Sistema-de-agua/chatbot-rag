@@ -337,7 +337,9 @@ export default function ChatAsistente() {
                   onClick={() => enviar(frecuente.pregunta)}
                   disabled={cargando}
                 >
-                  <i className={`fas ${frecuente.icono} ${estilos.accionIcono}`} aria-hidden="true" />
+                  <span className={estilos.accionIcono}>
+                    <i className={`fas ${frecuente.icono}`} aria-hidden="true" />
+                  </span>
                   <span>{frecuente.texto}</span>
                   <i className={`fas fa-arrow-right ${estilos.accionFlecha}`} aria-hidden="true" />
                 </button>
