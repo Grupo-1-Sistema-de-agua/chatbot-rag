@@ -13,3 +13,4 @@ node_modules/
 # Variables de entorno (secretos)
 .env
 .env.local
+!.env.example
