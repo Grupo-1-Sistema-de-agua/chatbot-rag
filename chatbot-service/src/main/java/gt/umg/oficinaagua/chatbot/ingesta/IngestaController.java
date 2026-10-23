@@ -11,27 +11,30 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
-import java.time.OffsetDateTime;
 
 @RestController
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class IngestaController implements IngestaApi {
 
     private final byte[] tokenAdmin;
+    private final IngestaService ingestaService;
 
-    public IngestaController(@Value("${chatbot.admin-token:}") String tokenAdmin) {
+    public IngestaController(@Value("${chatbot.admin-token:}") String tokenAdmin,
+                             IngestaService ingestaService) {
         this.tokenAdmin = tokenAdmin.getBytes(StandardCharsets.UTF_8);
+        this.ingestaService = ingestaService;
     }
 
     @Override
     public ResponseEntity<IngestaResponse> reindexar(String xAdminToken) {
         validarToken(xAdminToken);
+        ResultadoIngesta resultado = ingestaService.reindexar();
         IngestaResponse respuesta = new IngestaResponse()
-                .documentosMarkdown(0)
-                .documentosReplica(0)
-                .fragmentos(0)
-                .replicaDisponible(false)
-                .fecha(OffsetDateTime.now());
+                .documentosMarkdown(resultado.documentosMarkdown())
+                .documentosReplica(resultado.documentosReplica())
+                .fragmentos(resultado.fragmentos())
+                .replicaDisponible(resultado.replicaDisponible())
+                .fecha(resultado.fecha());
         return ResponseEntity.ok(respuesta);
     }
 
