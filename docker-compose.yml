@@ -19,5 +19,24 @@ services:
       timeout: 5s
       retries: 10
 
+  replica:
+    image: mariadb:10.11
+    container_name: chatbot_replica
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: ${REPLICA_ROOT_PASSWORD:?Define REPLICA_ROOT_PASSWORD en el archivo .env}
+      REPLICA_RO_PASSWORD: ${REPLICA_RO_PASSWORD:?Define REPLICA_RO_PASSWORD en el archivo .env}
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./replica:/docker-entrypoint-initdb.d:ro
+      - replica-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
 volumes:
   pgvector-data:
+  replica-data:
