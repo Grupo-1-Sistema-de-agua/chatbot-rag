@@ -25,6 +25,12 @@ spring:
         index-type: HNSW
         distance-type: COSINE_DISTANCE
         dimensions: 1024
+    retry:
+      max-attempts: 2
+      backoff:
+        initial-interval: 1s
+        multiplier: 2
+        max-interval: 2s
 
 server:
   port: 8082
