@@ -1,75 +1,83 @@
 .pagina {
+  position: relative;
   min-height: 100vh;
-  background: #f3f7fa;
-  color: #1f2937;
-  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
 }
 
-.encabezado {
-  padding: 16px 24px;
-  background: #0b6e99;
-  color: #ffffff;
+.fondo {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
 }
 
-.marca {
-  margin: 0;
-  font-weight: 700;
-  font-size: 18px;
+.mancha1,
+.mancha2,
+.mancha3 {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  animation: deriva 18s ease-in-out infinite alternate;
 }
 
-.portada {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 56px 24px 32px;
-  text-align: center;
+.mancha1 {
+  top: -160px;
+  left: -120px;
+  width: 520px;
+  height: 520px;
+  background: var(--mancha-1);
 }
 
-.titulo {
-  margin: 0 0 16px;
-  font-size: clamp(28px, 5vw, 40px);
-  color: #0b4f6c;
+.mancha2 {
+  right: -100px;
+  bottom: -180px;
+  width: 460px;
+  height: 460px;
+  background: var(--mancha-2);
+  animation-delay: -6s;
 }
 
-.descripcion {
-  margin: 0 auto;
-  max-width: 640px;
-  font-size: 17px;
-  line-height: 1.6;
-  color: #4b5563;
+.mancha3 {
+  top: 40%;
+  left: 55%;
+  width: 340px;
+  height: 340px;
+  background: var(--mancha-1);
+  opacity: 0.6;
+  animation-delay: -12s;
 }
 
-.secciones {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 16px 24px 64px;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-  gap: 16px;
-}
-
-.tarjeta {
-  background: #ffffff;
-  border: 1px solid #dbe5ec;
-  border-radius: 14px;
-  padding: 20px;
-}
-
-.tarjeta h2 {
-  margin: 0 0 8px;
-  font-size: 17px;
-  color: #0b6e99;
-}
-
-.tarjeta p {
-  margin: 0;
-  font-size: 14px;
-  line-height: 1.5;
-  color: #4b5563;
+.principal {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  width: 100%;
+  padding: 24px;
 }
 
 .pie {
-  padding: 24px;
+  position: relative;
+  z-index: 1;
+  padding: 0 24px 20px;
   text-align: center;
-  font-size: 13px;
-  color: #6b7280;
+  font-size: 12.5px;
+  color: var(--texto-suave);
+}
+
+@keyframes deriva {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+  to {
+    transform: translate(40px, -30px) scale(1.08);
+  }
+}
+
+@media (max-width: 600px) {
+  .principal {
+    padding: 12px;
+  }
 }
