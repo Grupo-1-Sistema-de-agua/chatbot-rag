@@ -322,7 +322,6 @@ export default function ChatAsistente() {
           <p className={estilos.destacadaTitulo}>Tarifas y catálogos al día</p>
           <p className={estilos.destacadaTexto}>
             Las tarifas, los sectores y los métodos de pago se consultan del sistema de la oficina.
-            Cada respuesta indica de dónde salió.
           </p>
         </div>
 
