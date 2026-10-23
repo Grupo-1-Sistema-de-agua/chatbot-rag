@@ -38,16 +38,24 @@ public class ReplicaDocumentosService {
     }
 
     private List<Document> documentosDeTarifas(List<TarifaVigente> tarifas) {
+        TarifaVigente exceso = tarifas.stream()
+                .filter(tarifa -> !tarifa.esServicio())
+                .findFirst()
+                .orElse(null);
+
         List<Document> documentos = new ArrayList<>();
         List<String> resumen = new ArrayList<>();
 
         for (TarifaVigente tarifa : tarifas) {
             String texto;
             if (tarifa.esServicio()) {
+                String reglaExceso = exceso == null ? "" : String.format(
+                        " Si el consumo del mes pasa de %s litros, se suma un exceso de %s por cada bloque de 1,000 litros o fracción de más.",
+                        litros(tarifa.volumenIncluidoLitros()), quetzales(exceso.precio()));
                 texto = String.format(
-                        "Tarifa vigente del servicio de agua %s (código %s): la cuota mensual es de %s e incluye %s litros de agua al mes. Vigente desde el %s.",
+                        "Tarifa vigente del servicio de agua %s (código %s): la cuota mensual es de %s e incluye %s litros de agua al mes.%s Vigente desde el %s.",
                         tarifa.nombre(), tarifa.codigo(), quetzales(tarifa.precio()),
-                        litros(tarifa.volumenIncluidoLitros()), fecha(tarifa));
+                        litros(tarifa.volumenIncluidoLitros()), reglaExceso, fecha(tarifa));
                 resumen.add(String.format("%s: %s al mes con %s litros incluidos",
                         tarifa.nombre(), quetzales(tarifa.precio()), litros(tarifa.volumenIncluidoLitros())));
             } else {
@@ -69,8 +77,8 @@ public class ReplicaDocumentosService {
     }
 
     private Document documentoDeSectores(List<String> sectores) {
-        String texto = "Sectores, barrios y aldeas donde la oficina del agua presta el servicio de agua: "
-                + String.join(", ", sectores) + ".";
+        String texto = "Sectores, barrios, colonias y aldeas donde hay servicio de agua (cobertura de la oficina del agua): "
+                + String.join(", ", sectores) + ". En estos lugares la oficina del agua presta el servicio.";
         return new Document(texto, metadatos(FUENTE_SECTORES, "SECTORES"));
     }
 
