@@ -35,6 +35,10 @@ chatbot:
     url: jdbc:mariadb://${REPLICA_HOST:localhost}:${REPLICA_PORT:3307}/agua_db
     username: chatbot_ro
     password: ${REPLICA_RO_PASSWORD}
+  conocimiento:
+    ubicacion: ${CHATBOT_CONOCIMIENTO:classpath:conocimiento/*.md}
+  ingesta:
+    al-arrancar: true
 
 springdoc:
   swagger-ui:
