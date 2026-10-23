@@ -39,6 +39,9 @@ chatbot:
     ubicacion: ${CHATBOT_CONOCIMIENTO:classpath:conocimiento/*.md}
   ingesta:
     al-arrancar: true
+  chat:
+    top-k: 4
+    umbral: 0.5
 
 springdoc:
   swagger-ui:
