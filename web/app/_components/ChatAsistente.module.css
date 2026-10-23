@@ -491,6 +491,10 @@
   overflow-y: auto;
 }
 
+.lateral > * {
+  flex-shrink: 0;
+}
+
 .tarjetaDestacada {
   position: relative;
   overflow: hidden;
