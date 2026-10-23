@@ -3,9 +3,11 @@ package gt.umg.oficinaagua.chatbot.config;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Scope;
 import org.springframework.jdbc.core.simple.JdbcClient;
 
 @Configuration
@@ -13,14 +15,18 @@ public class DataSourceConfig {
 
     @Bean
     @Primary
+    @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
     public HikariDataSource pgvectorDataSource(
             @Value("${spring.datasource.url}") String url,
             @Value("${spring.datasource.username}") String usuario,
             @Value("${spring.datasource.password}") String contrasena) {
-        return crear("pgvector-pool", url, usuario, contrasena, 10);
+        HikariDataSource dataSource = crear("pgvector-pool", url, usuario, contrasena, 10);
+        dataSource.setConnectionTimeout(5000);
+        return dataSource;
     }
 
     @Bean
+    @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
     public HikariDataSource replicaDataSource(
             @Value("${chatbot.replica.url}") String url,
             @Value("${chatbot.replica.username}") String usuario,
@@ -33,6 +39,7 @@ public class DataSourceConfig {
     }
 
     @Bean
+    @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
     public JdbcClient replicaJdbcClient(@Qualifier("replicaDataSource") HikariDataSource replicaDataSource) {
         return JdbcClient.create(replicaDataSource);
     }
