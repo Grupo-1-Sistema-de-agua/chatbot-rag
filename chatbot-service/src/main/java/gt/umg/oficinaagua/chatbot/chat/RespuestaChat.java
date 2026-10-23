@@ -1,4 +1,9 @@
 package gt.umg.oficinaagua.chatbot.chat;
 
-public class RespuestaChat {
+import java.util.List;
+
+public record RespuestaChat(
+        String respuesta,
+        List<String> fuentes,
+        boolean conInformacion) {
 }
