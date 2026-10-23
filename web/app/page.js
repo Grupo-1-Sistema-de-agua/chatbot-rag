@@ -1,69 +1,54 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import ChatWidget from './_components/ChatWidget';
+import estilos from './page.module.css';
 
-export default function Home() {
+const SECCIONES = [
+  {
+    titulo: 'Tarifas y cobro',
+    texto: 'Conoce las cuotas de cuarto de paja y media paja, los litros incluidos y cómo se calcula el exceso de consumo.',
+  },
+  {
+    titulo: 'Pagos y recibos',
+    texto: 'Consulta los métodos de pago que acepta la oficina y cómo obtener tu recibo.',
+  },
+  {
+    titulo: 'Fugas y ahorro',
+    texto: 'Aprende a detectar una fuga en casa, a quién reportarla y cómo cuidar el agua.',
+  },
+  {
+    titulo: 'Trámites',
+    texto: 'Nueva conexión, cambio de titular y reclamos por lecturas o cobros.',
+  },
+];
+
+export default function Inicio() {
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>
-            To get started, edit the{" "}
-            <code className={styles.code}>page.js</code> file.
-          </h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+    <main className={estilos.pagina}>
+      <header className={estilos.encabezado}>
+        <p className={estilos.marca}>Oficina del Agua</p>
+      </header>
+
+      <section className={estilos.portada}>
+        <h1 className={estilos.titulo}>Servicio de agua potable para tu comunidad</h1>
+        <p className={estilos.descripcion}>
+          ¿Tienes dudas sobre tu cobro, tus pagos o una fuga? Pregúntale a nuestro asistente virtual
+          con el botón de la esquina inferior derecha.
+        </p>
+      </section>
+
+      <section className={estilos.secciones}>
+        {SECCIONES.map((seccion) => (
+          <article key={seccion.titulo} className={estilos.tarjeta}>
+            <h2>{seccion.titulo}</h2>
+            <p>{seccion.texto}</p>
+          </article>
+        ))}
+      </section>
+
+      <footer className={estilos.pie}>
+        Sistema de Gestión de la Oficina del Agua · Asistente virtual con RAG
+      </footer>
+
+      <ChatWidget />
+    </main>
   );
 }
