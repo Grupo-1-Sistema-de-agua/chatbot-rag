@@ -31,3 +31,8 @@ server:
 
 chatbot:
   admin-token: ${CHATBOT_ADMIN_TOKEN:}
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    url: /openapi/chatbot-service.yaml
