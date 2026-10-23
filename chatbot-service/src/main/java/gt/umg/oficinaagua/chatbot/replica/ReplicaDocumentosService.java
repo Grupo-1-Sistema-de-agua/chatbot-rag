@@ -60,7 +60,7 @@ public class ReplicaDocumentosService {
                         tarifa.nombre(), quetzales(tarifa.precio()), litros(tarifa.volumenIncluidoLitros())));
             } else {
                 texto = String.format(
-                        "Precio vigente del exceso de consumo (%s): se cobran %s por cada bloque de 1,000 litros o fracción que pase de los litros incluidos en el tipo de servicio. Vigente desde el %s.",
+                        "Precio vigente del exceso de consumo (%s), es decir, cuánto se paga por los litros de exceso o litros de más: se cobran %s por cada bloque de 1,000 litros o fracción que pase de los litros incluidos en el tipo de servicio. Vigente desde el %s.",
                         tarifa.nombre(), quetzales(tarifa.precio()), fecha(tarifa));
                 resumen.add(String.format("exceso de consumo: %s por cada 1,000 litros o fracción",
                         quetzales(tarifa.precio())));
