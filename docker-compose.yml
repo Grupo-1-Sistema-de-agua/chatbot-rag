@@ -37,6 +37,19 @@ services:
       timeout: 5s
       retries: 10
 
+  dynamodb:
+    image: amazon/dynamodb-local
+    container_name: chatbot_dynamodb
+    restart: unless-stopped
+    user: root
+    working_dir: /home/dynamodblocal
+    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath /home/dynamodblocal/data"
+    ports:
+      - "8001:8000"
+    volumes:
+      - dynamodb-data:/home/dynamodblocal/data
+
 volumes:
   pgvector-data:
   replica-data:
+  dynamodb-data:
