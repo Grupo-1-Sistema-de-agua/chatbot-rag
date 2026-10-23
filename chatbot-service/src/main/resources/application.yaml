@@ -1,3 +1,33 @@
 spring:
   application:
     name: chatbot-service
+  config:
+    import:
+      - optional:file:.env[.properties]
+      - optional:file:../.env[.properties]
+  datasource:
+    url: jdbc:postgresql://${PG_HOST:localhost}:${PG_PORT:5433}/chatbot
+    username: chatbot
+    password: ${PG_PASSWORD}
+  ai:
+    ollama:
+      base-url: ${OLLAMA_BASE_URL:http://localhost:11434}
+      chat:
+        options:
+          model: llama3.1:8b
+          temperature: 0.2
+      embedding:
+        options:
+          model: bge-m3
+    vectorstore:
+      pgvector:
+        initialize-schema: true
+        index-type: HNSW
+        distance-type: COSINE_DISTANCE
+        dimensions: 1024
+
+server:
+  port: 8082
+
+chatbot:
+  admin-token: ${CHATBOT_ADMIN_TOKEN:}
