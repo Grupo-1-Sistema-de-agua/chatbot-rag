@@ -42,6 +42,12 @@ chatbot:
   chat:
     top-k: 6
     umbral: 0.45
+  bitacora:
+    endpoint: ${DYNAMODB_ENDPOINT:http://localhost:8001}
+    region: ${AWS_REGION:us-east-1}
+    access-key: ${AWS_ACCESS_KEY_ID:local}
+    secret-key: ${AWS_SECRET_ACCESS_KEY:local}
+    tabla: ${CHATBOT_BITACORA_TABLA:ChatbotBitacora}
 
 springdoc:
   swagger-ui:
