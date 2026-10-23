@@ -289,7 +289,7 @@ export default function ChatAsistente() {
               className={estilos.entrada}
               value={texto}
               onChange={(evento) => setTexto(evento.target.value)}
-              placeholder="Escribe tu pregunta sobre el servicio de agua…"
+              placeholder="Escribe tu pregunta…"
               maxLength={500}
               disabled={cargando}
               aria-label="Tu pregunta"
