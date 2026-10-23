@@ -58,9 +58,12 @@ public class IngestaService {
         todos.addAll(replica);
         List<Document> fragmentos = divisor.apply(todos);
 
-        jdbcTemplate.execute("TRUNCATE TABLE vector_store");
         try {
+            jdbcTemplate.execute("TRUNCATE TABLE vector_store");
             vectorStore.add(fragmentos);
+        } catch (DataAccessException e) {
+            throw new ServicioNoDisponibleException(
+                    "No se pudo guardar en la base vectorial. Verifica que pgvector esté disponible.", e);
         } catch (RuntimeException e) {
             throw new ServicioNoDisponibleException(
                     "No se pudieron generar los embeddings. Verifica que Ollama esté disponible.", e);
