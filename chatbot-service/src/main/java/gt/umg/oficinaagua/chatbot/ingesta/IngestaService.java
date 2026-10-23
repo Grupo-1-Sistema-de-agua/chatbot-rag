@@ -38,7 +38,7 @@ public class IngestaService {
         this.replicaDocumentosService = replicaDocumentosService;
         this.vectorStore = vectorStore;
         this.jdbcTemplate = jdbcTemplate;
-        this.divisor = new TokenTextSplitter();
+        this.divisor = TokenTextSplitter.builder().build();
     }
 
     @Transactional
