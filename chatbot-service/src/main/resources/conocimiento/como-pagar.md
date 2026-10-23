@@ -2,7 +2,7 @@
 
 ## Qué se paga cada mes
 
-Cada pago corresponde a la lectura de un mes de un contador. El monto a pagar es fijo: la cuota del tipo de servicio más el exceso, si el consumo pasó de los litros incluidos. No se pueden hacer pagos parciales de un mes.
+Cada pago corresponde a la lectura de un mes de un contador. El monto a pagar es fijo: la cuota del tipo de servicio más el exceso, si el consumo pasó de los litros incluidos. No se pueden hacer pagos parciales: no es posible pagar solo una parte del mes, se paga el monto completo.
 
 ---
 
