@@ -1,0 +1,156 @@
+openapi: 3.0.3
+info:
+  title: Chatbot de la Oficina del Agua
+  description: Microservicio de preguntas y respuestas con RAG para la página pública del Sistema de Gestión de la Oficina del Agua.
+  version: 1.0.0
+tags:
+  - name: Chat
+    description: Preguntas de los vecinos
+  - name: Ingesta
+    description: Reindexación de la base de conocimiento
+paths:
+  /api/chat:
+    post:
+      tags:
+        - Chat
+      operationId: enviarPregunta
+      summary: Responde una pregunta usando la base de conocimiento
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatRequest'
+      responses:
+        '200':
+          description: Respuesta generada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatResponse'
+        '400':
+          $ref: '#/components/responses/SolicitudInvalida'
+        '503':
+          $ref: '#/components/responses/ServicioNoDisponible'
+        '500':
+          $ref: '#/components/responses/ErrorInterno'
+  /api/ingesta:
+    post:
+      tags:
+        - Ingesta
+      operationId: reindexar
+      summary: Vuelve a indexar los documentos .md y los catálogos de la réplica
+      parameters:
+        - name: X-Admin-Token
+          in: header
+          required: false
+          description: Token de administración (variable CHATBOT_ADMIN_TOKEN)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Reindexación completada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IngestaResponse'
+        '401':
+          $ref: '#/components/responses/NoAutorizado'
+        '503':
+          $ref: '#/components/responses/ServicioNoDisponible'
+        '500':
+          $ref: '#/components/responses/ErrorInterno'
+components:
+  schemas:
+    ChatRequest:
+      type: object
+      required:
+        - pregunta
+      properties:
+        pregunta:
+          type: string
+          minLength: 3
+          maxLength: 500
+          pattern: '(?s).*\S.*'
+          example: ¿Cuánto se paga por media paja?
+    ChatResponse:
+      type: object
+      required:
+        - respuesta
+        - fuentes
+      properties:
+        respuesta:
+          type: string
+          example: La tarifa de media paja es de Q80.00 al mes e incluye 60,000 litros.
+        fuentes:
+          type: array
+          items:
+            type: string
+          example:
+            - Tarifas vigentes
+            - calculo-consumo.md
+    IngestaResponse:
+      type: object
+      required:
+        - documentosMarkdown
+        - documentosReplica
+        - fragmentos
+        - replicaDisponible
+        - fecha
+      properties:
+        documentosMarkdown:
+          type: integer
+          example: 4
+        documentosReplica:
+          type: integer
+          example: 9
+        fragmentos:
+          type: integer
+          example: 27
+        replicaDisponible:
+          type: boolean
+          example: true
+        fecha:
+          type: string
+          format: date-time
+    RespuestaError:
+      type: object
+      required:
+        - codigo
+        - mensaje
+        - fecha
+      properties:
+        codigo:
+          type: string
+          example: SOLICITUD_INVALIDA
+        mensaje:
+          type: string
+          example: 'pregunta: el tamaño debe estar entre 3 y 500'
+        fecha:
+          type: string
+          format: date-time
+  responses:
+    SolicitudInvalida:
+      description: La solicitud no cumple el contrato
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RespuestaError'
+    NoAutorizado:
+      description: Token de administración ausente o inválido
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RespuestaError'
+    ServicioNoDisponible:
+      description: Ollama, pgvector u otro servicio necesario no está disponible
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RespuestaError'
+    ErrorInterno:
+      description: Error inesperado
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RespuestaError'

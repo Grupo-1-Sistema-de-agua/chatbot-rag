@@ -1,0 +1,110 @@
+name: chatbot-rag
+
+services:
+  pgvector:
+    image: pgvector/pgvector:pg17
+    container_name: chatbot_pgvector
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: chatbot
+      POSTGRES_USER: chatbot
+      POSTGRES_PASSWORD: ${PG_PASSWORD:?Define PG_PASSWORD en el archivo .env}
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgvector-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U chatbot -d chatbot"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  replica:
+    image: mariadb:10.11
+    container_name: chatbot_replica
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: ${REPLICA_ROOT_PASSWORD:?Define REPLICA_ROOT_PASSWORD en el archivo .env}
+      REPLICA_RO_PASSWORD: ${REPLICA_RO_PASSWORD:?Define REPLICA_RO_PASSWORD en el archivo .env}
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./replica:/docker-entrypoint-initdb.d:ro
+      - replica-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  dynamodb:
+    image: amazon/dynamodb-local
+    container_name: chatbot_dynamodb
+    restart: unless-stopped
+    user: root
+    working_dir: /home/dynamodblocal
+    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath /home/dynamodblocal/data"
+    ports:
+      - "8001:8000"
+    volumes:
+      - dynamodb-data:/home/dynamodblocal/data
+
+  chatbot-service:
+    build: ./chatbot-service
+    container_name: chatbot_service
+    restart: unless-stopped
+    environment:
+      PG_HOST: pgvector
+      PG_PORT: "5432"
+      PG_PASSWORD: ${PG_PASSWORD:?Define PG_PASSWORD en el archivo .env}
+      REPLICA_HOST: replica
+      REPLICA_PORT: "3306"
+      REPLICA_RO_PASSWORD: ${REPLICA_RO_PASSWORD:?Define REPLICA_RO_PASSWORD en el archivo .env}
+      DYNAMODB_ENDPOINT: http://dynamodb:8000
+      OLLAMA_BASE_URL: http://host.docker.internal:11434
+      CHATBOT_ADMIN_TOKEN: ${CHATBOT_ADMIN_TOKEN:?Define CHATBOT_ADMIN_TOKEN en el archivo .env}
+      CHATBOT_CONOCIMIENTO: file:/conocimiento/*.md
+      MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED: "true"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./chatbot-service/src/main/resources/conocimiento:/conocimiento:ro
+    ports:
+      - "8082:8082"
+    depends_on:
+      pgvector:
+        condition: service_healthy
+      replica:
+        condition: service_healthy
+      dynamodb:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "curl", "-fs", "http://localhost:8082/actuator/health/liveness"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 60s
+
+  web:
+    build: ./web
+    container_name: chatbot_web
+    restart: unless-stopped
+    environment:
+      CHATBOT_SERVICE_URL: http://chatbot-service:8082
+      CHAT_LIMITE_POR_MINUTO: ${CHAT_LIMITE_POR_MINUTO:-10}
+    ports:
+      - "3000:3000"
+    depends_on:
+      chatbot-service:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 20s
+
+volumes:
+  pgvector-data:
+  replica-data:
+  dynamodb-data:

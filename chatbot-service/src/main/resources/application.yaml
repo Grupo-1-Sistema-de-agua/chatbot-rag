@@ -1,3 +1,61 @@
 spring:
   application:
     name: chatbot-service
+  config:
+    import:
+      - optional:file:.env[.properties]
+      - optional:file:../.env[.properties]
+  datasource:
+    url: jdbc:postgresql://${PG_HOST:localhost}:${PG_PORT:5433}/chatbot
+    username: chatbot
+    password: ${PG_PASSWORD}
+  ai:
+    ollama:
+      base-url: ${OLLAMA_BASE_URL:http://localhost:11434}
+      chat:
+        options:
+          model: llama3.1:8b
+          temperature: 0.2
+      embedding:
+        options:
+          model: bge-m3
+    vectorstore:
+      pgvector:
+        initialize-schema: true
+        index-type: HNSW
+        distance-type: COSINE_DISTANCE
+        dimensions: 1024
+    retry:
+      max-attempts: 2
+      backoff:
+        initial-interval: 1s
+        multiplier: 2
+        max-interval: 2s
+
+server:
+  port: 8082
+
+chatbot:
+  admin-token: ${CHATBOT_ADMIN_TOKEN:}
+  replica:
+    url: jdbc:mariadb://${REPLICA_HOST:localhost}:${REPLICA_PORT:3307}/agua_db
+    username: chatbot_ro
+    password: ${REPLICA_RO_PASSWORD}
+  conocimiento:
+    ubicacion: ${CHATBOT_CONOCIMIENTO:classpath:conocimiento/*.md}
+  ingesta:
+    al-arrancar: true
+  chat:
+    top-k: 6
+    umbral: 0.45
+  bitacora:
+    endpoint: ${DYNAMODB_ENDPOINT:http://localhost:8001}
+    region: ${AWS_REGION:us-east-1}
+    access-key: ${AWS_ACCESS_KEY_ID:local}
+    secret-key: ${AWS_SECRET_ACCESS_KEY:local}
+    tabla: ${CHATBOT_BITACORA_TABLA:ChatbotBitacora}
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    url: /openapi/chatbot-service.yaml
