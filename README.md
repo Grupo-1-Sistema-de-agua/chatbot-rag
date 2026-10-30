@@ -17,22 +17,22 @@ Este repositorio contiene la **Feature 2 de la Fase 2**. Se construyó al lado d
 ## Contenido
 
 1. [Solución integrada de Fase 2](#1-solución-integrada-de-fase-2)
-    - [1.1 Diagrama de arquitectura](#11-diagrama-de-arquitectura)
-    - [1.2 Componentes](#12-componentes)
-    - [1.3 Conexiones y flujos](#13-conexiones-y-flujos)
-    - [1.4 Reglas de integración](#14-reglas-de-integración)
-    - [1.5 Ejecución de la solución](#15-ejecución-de-la-solución)
+   - [1.1 Diagrama de arquitectura](#11-diagrama-de-arquitectura)
+   - [1.2 Componentes](#12-componentes)
+   - [1.3 Conexiones y flujos](#13-conexiones-y-flujos)
+   - [1.4 Reglas de integración](#14-reglas-de-integración)
+   - [1.5 Ejecución de la solución](#15-ejecución-de-la-solución)
 2. [Mi módulo: Chatbot con RAG](#2-mi-módulo-chatbot-con-rag)
-    - [2.1 Funcionalidad y objetivo](#21-funcionalidad-y-objetivo)
-    - [2.2 Arquitectura del módulo](#22-arquitectura-del-módulo)
-    - [2.3 Integración y responsabilidades](#23-integración-y-responsabilidades)
-    - [2.4 Decisiones técnicas](#24-decisiones-técnicas)
-    - [2.5 Cómo probar el módulo](#25-cómo-probar-el-módulo)
-    - [2.6 Base de conocimiento y plantilla de la oficina](#26-base-de-conocimiento-y-plantilla-de-la-oficina)
-    - [2.7 Contrato de la API](#27-contrato-de-la-api)
-    - [2.8 Estructura del repositorio](#28-estructura-del-repositorio)
-    - [2.9 Seguridad](#29-seguridad)
-    - [2.10 Flujo de trabajo y documentación adicional](#210-flujo-de-trabajo-y-documentación-adicional)
+   - [2.1 Funcionalidad y objetivo](#21-funcionalidad-y-objetivo)
+   - [2.2 Arquitectura del módulo](#22-arquitectura-del-módulo)
+   - [2.3 Integración y responsabilidades](#23-integración-y-responsabilidades)
+   - [2.4 Decisiones técnicas](#24-decisiones-técnicas)
+   - [2.5 Cómo probar el módulo](#25-cómo-probar-el-módulo)
+   - [2.6 Base de conocimiento y plantilla de la oficina](#26-base-de-conocimiento-y-plantilla-de-la-oficina)
+   - [2.7 Contrato de la API](#27-contrato-de-la-api)
+   - [2.8 Estructura del repositorio](#28-estructura-del-repositorio)
+   - [2.9 Seguridad](#29-seguridad)
+   - [2.10 Flujo de trabajo y documentación adicional](#210-flujo-de-trabajo-y-documentación-adicional)
 3. [Uso de inteligencia artificial en esta documentación](#3-uso-de-inteligencia-artificial-en-esta-documentación)
 
 ---
@@ -275,7 +275,7 @@ curl -s -X POST http://localhost:8082/api/ingesta -H "X-Admin-Token: $CHATBOT_AD
 ```
 Responde el resumen: `documentosMarkdown`, `documentosReplica`, `fragmentos` y `replicaDisponible`. Sin token, o con uno incorrecto, responde **401**.
 
-**Bitácora en DynamoDB:**
+**Bitácora en DynamoDB** (requiere AWS CLI):
 ```bash
 export AWS_ACCESS_KEY_ID=local AWS_SECRET_ACCESS_KEY=local AWS_DEFAULT_REGION=us-east-1
 aws dynamodb scan --table-name ChatbotBitacora --endpoint-url http://localhost:8001 \
@@ -351,7 +351,8 @@ chatbot-rag/
 │   ├── Dockerfile                   Imagen en tres etapas con salida standalone
 │   ├── app/api/chat/route.js        BFF con validación y límite por IP
 │   ├── app/_components/             Chat protagonista y barra superior
-│   └── lib/limite-preguntas.js
+│   ├── lib/limite-preguntas.js
+│   └── .env.example                 Variables para ejecutar la web fuera de Docker
 ├── replica/                         Volcado de agua_db y script del usuario chatbot_ro
 ├── scripts/                         Batería de preguntas
 ├── docs/                            Diagramas, calibración, Singleton, pruebas y planificación
