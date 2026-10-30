@@ -7,3 +7,12 @@ Feature 2 de la Fase 2 del Sistema de Gestión para la Oficina del Agua: un chat
 **Autora:** Mijeli Azucena Lucero Burgos
 
 > Proyecto en desarrollo. La documentación completa se agregará al finalizar.
+
+## Estructura del repositorio
+
+| Carpeta | Contenido |
+|---|---|
+| `chatbot-service/` | Microservicio Spring Boot 4.1 (JDK 17) con Spring AI: ingesta y chat RAG |
+| `web/` | Página pública en Next.js con el widget de chat y el BFF |
+| `replica/` | Scripts de inicialización de la réplica de la base de datos |
+| `docs/` | Planificación y documentación del proyecto |
